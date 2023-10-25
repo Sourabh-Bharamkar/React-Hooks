@@ -7,17 +7,22 @@ import Button from '../UI/Button/Button';
 const Login = (props) => {
   const [enteredEmail, setEnteredEmail] = useState('');
   const [emailIsValid, setEmailIsValid] = useState();
+
   const [enteredPassword, setEnteredPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState();
+
+  const [enteredCollegeName, setEnteredCollegeName] = useState('');
+  const [collegeNameIsValid, setCollegeNameIsValid] = useState();
+
   const [formIsValid, setFormIsValid] = useState(false);
 
 
   useEffect(() => {
 
-    const timerId=setTimeout(() => {
+    const timerId = setTimeout(() => {
       console.log('checking form validity...')
       setFormIsValid(
-        enteredEmail.includes('@') && enteredPassword.trim().length > 6
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6 && enteredCollegeName.trim().length>5
       );
     }, 500)
 
@@ -25,12 +30,12 @@ const Login = (props) => {
     // for 1st time and will get executed before useEfect execution and after executing
     // again it will get stored into memory  
 
-    return ()=>{
+    return () => {
       console.log('cleanup function executed')
       clearInterval(timerId)
     }
 
-  }, [enteredEmail, enteredPassword])
+  }, [enteredEmail, enteredPassword, enteredCollegeName])
 
 
 
@@ -43,6 +48,10 @@ const Login = (props) => {
     setEnteredPassword(event.target.value);
   };
 
+  const collegeNameChangeHandler=(event)=>{
+    setEnteredCollegeName(event.target.value)
+  }
+
 
   const validateEmailHandler = () => {
     setEmailIsValid(enteredEmail.includes('@'));
@@ -52,10 +61,16 @@ const Login = (props) => {
     setPasswordIsValid(enteredPassword.trim().length > 6);
   };
 
+  const validateCollegeNameHandler=()=>{
+    setCollegeNameIsValid(enteredCollegeName.trim().length>5)
+  }
+
+
   const submitHandler = (event) => {
     event.preventDefault();
     props.onLogin(enteredEmail, enteredPassword);
   };
+
 
   return (
     <Card className={classes.login}>
@@ -86,6 +101,22 @@ const Login = (props) => {
             onBlur={validatePasswordHandler}
           />
         </div>
+
+        <div
+          className={`${classes.control} ${collegeNameIsValid === false ? classes.invalid : ''
+            }`}
+        >
+          <label htmlFor="collegeName">collegeName</label>
+          <input
+            type="text"
+            id="collegeName"
+            value={enteredCollegeName}
+            onChange={collegeNameChangeHandler}
+            onBlur={validateCollegeNameHandler}
+          />
+        </div>
+
+
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn} disabled={!formIsValid}>
             Login
